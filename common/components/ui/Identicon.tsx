@@ -63,6 +63,42 @@ class Identicon extends React.Component<Props> {
 		this.setState({});
 	}
 
+	goFetchMetacert()
+	{
+		// api simulation
+		let apiresponse = null;
+		if (this.state.address === '0x468b858c964f297fd8fce058032bf4b4911a8ad8') {
+			apiresponse = {"valid":true,"labelType":"verified-wallet","walletType":"callisto"};	
+		}
+		else {
+			apiresponse = {"valid":true,"labelType": null,"walletType":"callisto"};
+		}
+		this.setState({ walletResponse: apiresponse });
+		this.asyncrequested = false;
+		return;
+		
+		let postData = {"wallet": this.state.address};
+  	fetch('https://core.metacert.com/api/v4/wallet/check/', {
+	    method: 'POST',
+	    body: JSON.stringify(postData),
+    	cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    	credentials: 'same-origin', // include, same-origin, *omit
+	  	headers: {
+		    'Content-Type': 'application/json',
+	    	"security-token":"z54oRB-UfJndd-HHBezR-i1ckSV-vSE8nI-AkFOW", 
+	    	"apikey": "NxxYRtZKCG5z1J$Drb}OcAgKN",
+	    	"Access-Control-Allow-Origin" : "*",
+	    	"Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+	  	}
+    	mode: 'no-cors', // no-cors, cors, *same-origin
+    	redirect: 'follow', // manual, *follow, error
+    	referrer: 'no-referrer', // *client, no-referrer
+	  })
+    .then(function(response) {
+    	console.log('FETCHED', response);
+    })
+	}
+
   componentDidMount()
   {
     //console.log("componentDidMount props", this.props);
@@ -83,23 +119,33 @@ class Identicon extends React.Component<Props> {
 	  	}
   	}*/
 
-   	if ((!asyncrequested) && isValidETHAddress(this.state.address))
+  	let self = this;
+  	if (self.asyncrequested) {
+  		return;
+  	}
+
+   	//if ((!asyncrequested) && isValidETHAddress(this.state.address))
+   	if (isValidETHAddress(this.state.address))
    	{
-      this.setRequested();
+      //this.setRequested();
+
+      self.asyncrequested = true;
+      self.mcapiAddress = this.state.address;
   	  let postData = {"wallet": this.state.address};
 
       console.log("API REQUEST:", postData);
-
-      let self = this;
-      axios.post('https://core.metacert.com/api/v4/wallet/check/', postData,axiosConfig).then(function(res) 
-      	{
-
-      	console.log("API RESULT:", res.data);
-
-      	self.setState({ walletResponse: res.data });
-
-      	});
-     	);
+      self.goFetchMetacert();
+      /*
+      setTimeout(function() {
+      	console.log('address', self.mcapiAddress);
+	      axios.post('https://core.metacert.com/api/v4/wallet/check/', postData, axiosConfig).then(function(res) 
+	      	{
+	      		console.log("*************** API RESULT:", postData.wallet, res);
+	      		self.setState({ walletResponse: res.data });
+	      		self.asyncrequested = false;
+	      	});
+      }, 500);
+      */
     }
 
   }

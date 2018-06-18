@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@parity/qr-signer": "0.2.1",
+    "axios": "^0.18.0",
     "babel-polyfill": "6.26.0",
     "bip39": "2.5.0",
     "bn.js": "4.11.8",
