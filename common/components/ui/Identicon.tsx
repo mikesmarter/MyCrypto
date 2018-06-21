@@ -29,6 +29,10 @@ enum metacert_wallet_title {
     phishing = "phishing wallet"
 }
 
+//const MetaCertAPIUrl = 'https://core.metacert.com/api/v4/wallet/check';
+//const MetaCertAPIUrl = 'http://localhost:5000/check';
+const MetaCertAPIUrl = 'http://apifaker.seeksmarterdev.com/check';
+
 class Identicon extends React.Component<Props> {
 
   constructor(props: Props){
@@ -68,7 +72,7 @@ class Identicon extends React.Component<Props> {
 
 		let postData = {"wallet": this.state.address};
   		//fetch('https://core.metacert.com/api/v4/wallet/check', {
-  		fetch('http://localhost:5000/check', {
+  		fetch(MetaCertAPIUrl, {
 	    method: 'POST',
 	    body: JSON.stringify(postData),
     	cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -305,7 +309,10 @@ class Identicon extends React.Component<Props> {
     if (this.state.metacert_response === undefined)
     {
       return (
-				<div className={`Identicon ${className}`} title="Address Identicon" style={{ width: size, height: size, position: 'relative' }}>
+				<div
+          className={`Identicon ${className}`}
+          title="Address Identicon"
+          style={{ width: size, height: size, position: 'relative' }}>
   	      <div
   	          className="border"
   	          style={{
@@ -317,7 +324,8 @@ class Identicon extends React.Component<Props> {
   	            borderRadius: '50%',
   	            pointerEvents: 'none'
   	          }}
-  	       />
+  	       >
+           </div>
   	    </div>
 	    );
     }
