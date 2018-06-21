@@ -52,9 +52,8 @@ class AddressFieldDropdown extends React.Component<Props> {
   }
 
   private renderDropdownItems = () =>
+    //this.forceUpdate();
 
-    this.forceUpdate();
-    
     this.getFilteredLabels().map((filteredLabel, index: number) => {
       const { activeIndex } = this.state;
       const { address, label } = filteredLabel;
