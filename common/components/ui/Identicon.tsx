@@ -22,17 +22,16 @@ class Identicon extends React.Component<Props> {
     this.state = this.props;
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps, prevState) 
+  {
     
 	if (isValidETHAddress(nextProps.address)
  	{
  		return {
  			address: nextProps.address;
- 			asyncrequested: false;
  		}
  	}
 	return null;
-
   }
 
 

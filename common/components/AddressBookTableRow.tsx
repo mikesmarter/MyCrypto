@@ -32,6 +32,12 @@ class AddressBookTableRow extends React.Component<Props> {
     this.setState({ label: nextProps.label, mostRecentValidLabel: nextProps.label });
   }
 
+  public componentDidMount()
+  {
+    console.log("seekdbg: componentDidMount AddressBookTableTow", this.props);
+    this.forceUpdate();
+  }
+
   public render() {
     const {
       address,
