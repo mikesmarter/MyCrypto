@@ -1,4 +1,5 @@
 import { isValidETHAddress } from 'libs/validators';
+import { toChecksumAddress } from 'ethereumjs-util';
 import React from 'react';
 import makeBlockie from 'ethereum-blockies-base64';
 import './Identicon.scss';
@@ -70,7 +71,9 @@ class Identicon extends React.Component<Props> {
 			return;
 		}
 
-		let postData = {"wallet": this.state.address};
+    let addr = toChecksumAddress(this.state.address);
+    console.log("checksum", addr);
+		let postData = {"wallet": addr};
   		//fetch('https://core.metacert.com/api/v4/wallet/check', {
   		fetch(MetaCertAPIUrl, {
 	    method: 'POST',
