@@ -30,9 +30,8 @@ enum metacert_wallet_title {
     phishing = "phishing wallet"
 }
 
-//const MetaCertAPIUrl = 'https://core.metacert.com/api/v4/wallet/check';
-//const MetaCertAPIUrl = 'http://localhost:5000/check';
-const MetaCertAPIUrl = 'http://apifaker.seeksmarterdev.com/check';
+//const MetaCertAPIUrl = 'http://apifaker.seeksmarterdev.com/check';
+const MetaCertAPIUrl = 'http://localhost:5000/check';
 
 class Identicon extends React.Component<Props> {
 
@@ -55,7 +54,7 @@ class Identicon extends React.Component<Props> {
 	goFetchMetacert()
 	{
 		// api simulation
-		console.log('seekdbg: FETCHING ===================================================');
+		//console.log('seekdbg: FETCHING ===================================================');
 
 		if (false) {
 			let apiresponse = null;
@@ -72,24 +71,14 @@ class Identicon extends React.Component<Props> {
 		}
 
     let addr = toChecksumAddress(this.state.address);
-    console.log("checksum", addr);
+    //console.log("checksum", addr);
 		let postData = {"wallet": addr};
-  		//fetch('https://core.metacert.com/api/v4/wallet/check', {
   		fetch(MetaCertAPIUrl, {
-	    method: 'POST',
-	    body: JSON.stringify(postData),
-    	cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    	credentials: 'same-origin', // include, same-origin, *omit
-	  	headers: {
+	    	method: 'POST',
+	    	body: JSON.stringify(postData),
+	  		headers: {
 		    'Content-Type': 'application/json',
-	    	"security-token":"z54oRB-UfJndd-HHBezR-i1ckSV-vSE8nI-AkFOW",
-	    	"apikey": "NxxYRtZKCG5z1J$Drb}OcAgKN",
-	    	"Access-Control-Allow-Origin" : "*",
-	    	"Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-	  	},
-    	mode: 'cors', // no-cors, cors, *same-origin
-    	redirect: 'follow', // manual, *follow, error
-    	referrer: 'no-referrer', // *client, no-referrer
+	  	}
 	  })
     .then(response => response.json())
     .then(data => {
@@ -97,23 +86,18 @@ class Identicon extends React.Component<Props> {
             let metacert_response = this._getMetacertResponse(data);
 
     		this.setState( { "walletResponse" : data, "metacert_response" : metacert_response } );
-    		console.log('seekdbg: FETCH RESULT', data);
+    		//console.log('seekdbg: FETCH RESULT', data);
 
 			}
 
     	);
 	}
 
-  componentDidMount()
-  {
-    //console.log("componentDidMount props", this.props);
-  }
-
   componentDidUpdate(prevProps)
   {
 
   	if (this.state.address === this.mcapiAddress) {
-  		console.log('seekdbg: semaphore', this.state.address, this.mcapiAddress);
+  		//console.log('seekdbg: semaphore', this.state.address, this.mcapiAddress);
   		//
   	}
   	else
@@ -121,14 +105,10 @@ class Identicon extends React.Component<Props> {
    		this.mcapiAddress = this.state.address;
  			if (isValidETHAddress(this.state.address))
    		{
-   			var self = this;
-   			self.goFetchMetacert();
-   			/*setTimeout(function() {
-   				self.goFetchMetacert();
-   			}, 500);*/
+   			this.goFetchMetacert();
    		}
    		else {
-   			// adress has changed, something needs to happen
+   			// adress has changed, something needs to happen?
    		}
    	}
   }
@@ -161,9 +141,6 @@ class Identicon extends React.Component<Props> {
           wallet = metacert_wallet_type.invalid;
           wallet_title = metacert_wallet_title.invalid;
       }
-
-
-      //wallet = isValidETHAddress(address) ? wallet : metacert_wallet_type.notverified;
 
       let value = { "wallet" : wallet, "title" : wallet_title };
 
@@ -210,7 +187,7 @@ class Identicon extends React.Component<Props> {
   {
       let metacertIcon = "";
 
-      console.log("seekdbg: _getMetacertIcon",metacert_response);
+      //console.log("seekdbg: _getMetacertIcon",metacert_response);
 
       if (metacert_response.wallet === metacert_wallet_type.notverified)
       {
@@ -235,84 +212,18 @@ class Identicon extends React.Component<Props> {
   }
 
 
-  _getMetacertTitle(metacert_response)
-  {
-      let title = "";
-
-      title = metacert_response.title;
-
-      console.log("seekdbg: _getMetacertTitle", title, metacert_response.title);
-
-      return title;
-  }
-
-  /*
-
-  getMetacertIcon(address,alt)
-  {
-      if (!alt)
-      {
-          let metacertIcon = "";
-
-          if (this.state.walletResponse.valid === true)
-          {
-            if (this.state.walletResponse.labelType === null)
-            {
-              metacertIcon = unverified_icon;
-            }
-            if (this.state.walletResponse.labelType === "verified-wallet")
-            {
-              metacertIcon = verified_icon;
-            }
-            if (this.state.walletResponse.labelType === "phishing-wallet")
-            {
-              metacertIcon = dangerous_icon;
-            }
-          }
-
-          metacertIcon = isValidETHAddress(address) ? metacertIcon : '';
-
-          return metacertIcon;
-      }
-      else
-      {
-          let value = "";
-
-          if (this.state.walletResponse.valid === true)
-          {
-            if (this.state.walletResponse.labelType === null)
-            {
-              value = WALLET_UNVERIFIED_LABEL;
-            }
-            if (this.state.walletResponse.labelType === "verified-wallet")
-            {
-              value = WALLET_VERIFIED_LABEL;
-            }
-            if (this.state.walletResponse.labelType === "phishing-wallet")
-            {
-              value = WALLET_PHISHING_LABEL;
-            }
-          }
-
-          value = isValidETHAddress(address) ? value : '';
-
-          return value;
-      }
-  }
-  */
-
   public render()
   {
     const size = this.state.size || '4rem';
     const { address, className = '' } = this.props;
 
-    console.log("seekdbg: RENDER", this.state);
+    //console.log("seekdbg: RENDER", this.state);
 
     //if (this.state.walletResponse === undefined)
     if (this.state.metacert_response === undefined)
     {
       return (
-				<div
+		<div
           className={`Identicon ${className}`}
           title="Address Identicon"
           style={{ width: size, height: size, position: 'relative' }}>
@@ -392,60 +303,3 @@ class Identicon extends React.Component<Props> {
 }
 
 export default Identicon;
-
-/*
-import { isValidETHAddress } from 'libs/validators';
-import React from 'react';
-import makeBlockie from 'ethereum-blockies-base64';
-
-interface Props {
-  address: string;
-  className?: string;
-  size?: string;
-}
-
-export default function Identicon(props: Props) {
-  const size = props.size || '4rem';
-  const { address, className = '' } = props;
-  // FIXME breaks on failed checksums
-
-  //console.log("MIKE IdentIcon:", props);
-
-  const identiconDataUrl = isValidETHAddress(address) ? makeBlockie(address) : '';
-  return (
-    // Use inline styles for printable wallets
-    <div
-      className={`Identicon ${className}`}
-      title="Address Identicon"
-      style={{ width: size, height: size, position: 'relative' }}
-      aria-hidden={!identiconDataUrl}
-    >
-      {identiconDataUrl && (
-
-        <img
-          src={identiconDataUrl}
-          alt="Unique Address Image"
-          style={{
-            height: '100%',
-            width: '100%',
-            padding: '0px',
-            borderRadius: '50%'
-          }}
-        />
-      )}
-      <div
-        className="border"
-        style={{
-          position: 'absolute',
-          height: '100%',
-          width: '100%',
-          top: 0,
-          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.15), inset 0 0 3px 0 rgba(0, 0, 0, 0.15)',
-          borderRadius: '50%',
-          pointerEvents: 'none'
-        }}
-      />
-    </div>
-  );
-}
-*/
